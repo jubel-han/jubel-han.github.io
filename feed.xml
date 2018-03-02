@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:dc="https://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Jubel Han</title>
+    <description></description>
+    <link>http://jubel.cn</link>
+    <atom:link href="http://jubel.cn/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>深入剖析：持续集成 (理论篇)</title>
+        <description></description>
+        <pubDate>Sun, 24 Dec 2017 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/continuous-integration</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/continuous-integration</guid>
+      </item>
+    
+      <item>
+        <title>深入剖析：持续交付 (理论篇)</title>
+        <description></description>
+        <pubDate>Sun, 24 Dec 2017 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/continuous-delivery</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/continuous-delivery</guid>
+      </item>
+    
+  </channel>
+</rss>
