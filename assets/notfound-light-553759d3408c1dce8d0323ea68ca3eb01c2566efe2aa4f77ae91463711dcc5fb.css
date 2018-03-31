@@ -500,8 +500,8 @@ abbr {
   border-bottom: 1px dotted #ebeaea; }
 
 blockquote {
-  padding: 0 0 4px 15px;
-  margin: 0 0 0 10px;
+  padding: 1px 0 15px 8px;
+  margin: 10px 0 0 10px;
   font-family: "Lato", Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-style: italic;

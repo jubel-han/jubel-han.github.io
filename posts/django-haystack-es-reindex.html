@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Jubel Han | 如何实现零宕机的重新索引 Elasticsearch 索引数据</title>
+  <meta name="description" content="How to Reindex the Elasticsearch Index data with Zero Downtime">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="如何实现零宕机的重新索引 Elasticsearch 索引数据">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://jubel.cn/posts/django-haystack-es-reindex">
+  <meta property="og:description" content="How to Reindex the Elasticsearch Index data with Zero Downtime">
+  <meta property="og:site_name" content="Jubel Han">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="http://jubel.cn/posts/django-haystack-es-reindex">
+  <meta name="twitter:title" content="如何实现零宕机的重新索引 Elasticsearch 索引数据">
+  <meta name="twitter:description" content="How to Reindex the Elasticsearch Index data with Zero Downtime">
+
+  
+    <meta property="og:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+    <meta name="twitter:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+  
+
+  <link href="http://jubel.cn/feed.xml" type="application/rss+xml" rel="alternate" title="Jubel Han Last 10 blog posts" />
+
+  
+
+  
+    <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+    <link rel="stylesheet" type="text/css" href="/assets/light-24d6e87da8032aa74d32e3a6ae969d8836edd504c2399ce9b8350303f4fea03b.css">
+  
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="Jubel Han">Jubel Han</a>
+  <ul class="header-links">
+    
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://gitlab.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitLab">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-gitlab">
+  <use href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab" xlink:href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://keybase.io/jubel" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/jubel" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>如何实现零宕机的重新索引 Elasticsearch 索引数据</h1>
+            <p>How to Reindex the Elasticsearch Index data with Zero Downtime</p>
+            <div class="article-list-footer">
+              <span class="article-list-date">
+                March 31, 2018
+              </span>
+              <span class="article-list-divider">-</span>
+              <span class="article-list-minutes">
+                
+                
+                  5 minute read
+                
+              </span>
+              <span class="article-list-divider">-</span>
+              <div class="article-list-tags">
+                
+                  <a href="/tag/elasticsearch">elasticsearch</a>
+                
+                  <a href="/tag/haystack">haystack</a>
+                
+                  <a href="/tag/django">django</a>
+                
+                  <a href="/tag/reindex">reindex</a>
+                
+                  <a href="/tag/zero downtime">zero downtime</a>
+                
+              </div>
+            </div>
+          </header>
+
+          <div class="article-content">
+            <h2 id="一句话">一句话</h2>
+
+<p>在使用 Django 开发 web 应用，使用 Haystack 作为我们的搜索接口，Elasticsearch 作为搜索引擎的背景下，因为 haystack 提供的重建索引的命令会导致长时间的数据丢失，所以本文中我们使用 Elasticsearch 的 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html#index-aliases">index alias</a> 和多个 Haystack 的 <a href="http://django-haystack.readthedocs.io/en/master/settings.html#haystack-connections">connection</a> 的方式，结合<a href="https://martinfowler.com/bliki/BlueGreenDeployment.html">蓝绿部署</a>的概念，实现了零宕机的快速重新索引。</p>
+
+<h2 id="背景">背景</h2>
+
+<p>承接上篇，我们介绍的可配置化的 Haystack Elasticsearch Backend，这篇文章，我们将介绍如何真正的实现零宕机的重新索引数据。</p>
+
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/reindex.html#reindex">官方对重新索引的说明</a>：</p>
+
+<blockquote>
+  <p>使用更新后的 settings 创建一个新的 index，然后从旧的 index 中拷贝所有的数据到新的 index</p>
+</blockquote>
+
+<p>由上篇文章，我们可以知道，haystack 提供的重新索引的方式（重建索引），对于一个线上的应用来说是不可接受的，那我们该如何实现零宕机的重新索引呢？</p>
+
+<p>这里我们借鉴了蓝绿部署的思想，结合 Elasticsearch Index Alias 和 Haystack Multiple Connection 的功能，满足了我们的需求，实现了零宕机的，随时随地的，重新索引我们的数据。</p>
+
+<p>重新索引的原因是在我们修改了索引的设置后，数据也不一定会被正确索引，设置也不一定会即时生效，根据设置的类型，有如下<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings">几种情况</a>：</p>
+
+<blockquote>
+  <ul>
+    <li>静态的设置 (<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#_static_index_settings">static settings</a>) 只有在 index 创建时或关闭之后修改才生效，而动态的设置 (<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#dynamic-index-settings">dynamic settings</a>) 可通过 update-index-settings 的 API 随时修改，即时生效。</li>
+    <li>我们在新建 analyzer 或是修改了字段设置后，需要重新索引( reindex ) 才能保证数据被正确的索引。</li>
+  </ul>
+</blockquote>
+
+<p><strong>Tips：</strong> 我们可以在索引中添加新类型，或是添加新的字段到该类型中，而不需要重新索引数据。</p>
+
+<h2 id="multiple-haystack-connections">Multiple Haystack Connections</h2>
+
+<p>首先，在 Django Settings 中，添加 Haystack 的 Connections</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># sepcify the haystack connections alias which are real indices.</span>
+<span class="n">ELASTICSEARCH_REAL_INDICES</span> <span class="o">=</span> <span class="p">(</span><span class="s">'blue'</span><span class="p">,</span> <span class="s">'green'</span><span class="p">)</span>
+
+<span class="n">HAYSTACK_CONNECTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'default'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">'ENGINE'</span><span class="p">:</span> <span class="s">'myapp.backends.ConfigurableElasticSearchEngine'</span><span class="p">,</span>
+        <span class="s">'URL'</span><span class="p">:</span> <span class="n">env_var</span><span class="p">(</span><span class="s">'HAYSTACK_URL'</span><span class="p">,</span> <span class="s">'http://127.0.0.1:9200/'</span><span class="p">),</span>
+        <span class="s">'INDEX_NAME'</span><span class="p">:</span> <span class="s">'haystack'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">'blue'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">'ENGINE'</span><span class="p">:</span> <span class="s">'myapp.backends.ConfigurableElasticSearchEngine'</span><span class="p">,</span>
+        <span class="s">'URL'</span><span class="p">:</span> <span class="n">env_var</span><span class="p">(</span><span class="s">'HAYSTACK_URL'</span><span class="p">,</span> <span class="s">'http://127.0.0.1:9200/'</span><span class="p">),</span>
+        <span class="s">'INDEX_NAME'</span><span class="p">:</span> <span class="s">'haystack_blue'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">'green'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">'ENGINE'</span><span class="p">:</span> <span class="s">'myapp.backends.ConfigurableElasticSearchEngine'</span><span class="p">,</span>
+        <span class="s">'URL'</span><span class="p">:</span> <span class="n">env_var</span><span class="p">(</span><span class="s">'HAYSTACK_URL'</span><span class="p">,</span> <span class="s">'http://127.0.0.1:9200/'</span><span class="p">),</span>
+        <span class="s">'INDEX_NAME'</span><span class="p">:</span> <span class="s">'haystack_green'</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>我们将 blue / green 中的一个 index 的别名设置为 default 的 index 名称，这样对于我们的应用来说，索引的名称是始终固定的 haystack，只是我们在更新或添加新的设置时，交替的将 blue 和 green 的别名指向到 default 上，类似于蓝绿部署一样的功能，实现了灵活的零宕机的重新索引。</p>
+
+<h2 id="django-management-command-for-reindex-date">Django management command for reindex date</h2>
+
+<p>我们使用 Django 的管理命令具体实现了重新索引 (reindex) 这个行为，并将其添加到了我们的 CI 的 pipeline 中，作为一个 on-demand 的任务，交由开发人员使用。</p>
+
+<p>我们重新索引的逻辑是这样的：</p>
+
+<ol>
+  <li>判断用户是否指定 <code class="highlighter-rouge">--rollback</code> 参数，决定是否要将当前默认 connection 的 index 别名指定到上一版本的真实 index 名称（在我们重新索引之后，如果出现意外情况，我们可以用其实现回滚）</li>
+  <li>获取当前的和新的 connections 的名称，得知哪个应该是 blue，哪个应该是 green</li>
+  <li>在非回滚的情况下，删除新的 connection 的 index，之后使用从代码中获取最新的 index settings 和 field mappings</li>
+  <li>判断用户是否指定 <code class="highlighter-rouge">--copy</code> 参数，决定是 reindex 还是新建索引并从数据库中加载数据（在我们没有修改mapping 时可以指定 copy 参数实现快速索引）。</li>
+  <li>判断默认的 connection 中 index 是否为别名 (是否为第一次运行 reindex)，来决定是删除默认连接的 index 并为其指定 index 别名，还是重新指定新的 index 别名。</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.management</span> <span class="kn">import</span> <span class="n">call_command</span>
+<span class="kn">from</span> <span class="nn">django.core.management.base</span> <span class="kn">import</span> <span class="n">BaseCommand</span>
+
+<span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
+<span class="kn">from</span> <span class="nn">elasticsearch.helpers</span> <span class="kn">import</span> <span class="n">reindex</span>
+
+
+<span class="k">class</span> <span class="nc">Toggle</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">Command</span><span class="p">(</span><span class="n">BaseCommand</span><span class="p">):</span>
+    <span class="n">DEFAULT_ES_CONNECTION</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">HAYSTACK_CONNECTIONS</span><span class="p">[</span><span class="s">'default'</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Command</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_indices</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">ELASTICSEARCH_REAL_INDICES</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ES_CONNECTION</span><span class="p">[</span><span class="s">'INDEX_NAME'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">(</span><span class="n">hosts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_ES_CONNECTION</span><span class="p">[</span><span class="s">'URL'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Toggle</span><span class="p">(</span><span class="o">*</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTICSEARCH_REAL_INDICES</span><span class="p">)</span>
+        <span class="n">next_connection</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="nb">next</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">exists_alias</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">,</span> <span class="n">next_connection</span>
+
+        <span class="n">current_real_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">get_alias</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="n">current_real_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">current_real_indices</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">next_connection</span> <span class="ow">in</span> <span class="n">current_real_index</span><span class="p">:</span>
+            <span class="n">next_connection</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="nb">next</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">current_real_index</span><span class="p">,</span> <span class="n">next_connection</span>
+
+    <span class="k">def</span> <span class="nf">add_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">'-c'</span><span class="p">,</span> <span class="s">'--copy'</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">'store_true'</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">'Copy the index data from old one instead update from database '</span>
+                 <span class="s">'NOTE: only using it when no mappings type changed.'</span>
+        <span class="p">)</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s">'-r'</span><span class="p">,</span> <span class="s">'--rollback'</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">'store_true'</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s">'Rollback to the old index.'</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+
+        <span class="n">rollback</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'rollback'</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">copy</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'copy'</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">current_index</span><span class="p">,</span> <span class="n">new_version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
+        <span class="n">new_index</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">HAYSTACK_CONNECTIONS</span><span class="p">[</span><span class="n">new_version</span><span class="p">][</span><span class="s">'INDEX_NAME'</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">rollback</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">f</span><span class="s">"Rolling back to the index {new_index} from {current_index}."</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">f</span><span class="s">"Reindexing the index from {current_index} to {new_index}."</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">f</span><span class="s">"Creating the new index {new_index} with specified settings and mappings."</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">new_index</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="mi">404</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s">"Copying the index from {current_index} to the {new_index}"</span><span class="p">)</span>
+                <span class="n">reindex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="p">,</span> <span class="n">current_index</span><span class="p">,</span> <span class="n">new_index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">call_command</span><span class="p">(</span><span class="s">'update_index'</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="p">[</span><span class="n">new_version</span><span class="p">],</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="n">f</span><span class="s">"Pointing the index {new_index} to the alias {self.index_alias}."</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">exists_alias</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">):</span>
+            <span class="n">update_aliases</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">"actions"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s">"remove"</span><span class="p">:</span> <span class="p">{</span><span class="s">"index"</span><span class="p">:</span> <span class="n">current_index</span><span class="p">,</span> <span class="s">"alias"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">}},</span>
+                    <span class="p">{</span><span class="s">"add"</span><span class="p">:</span> <span class="p">{</span><span class="s">"index"</span><span class="p">:</span> <span class="n">new_index</span><span class="p">,</span> <span class="s">"alias"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">}}</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">update_aliases</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">update_aliases</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="mi">404</span><span class="p">,</span> <span class="mi">400</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">es_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">put_alias</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">new_index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index_alias</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">u"Successfully reindex."</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="notes">NOTES</h3>
+
+<p>本文没有，完全采用参考的文章中方法，原因如下（参考的文章中有坑）：</p>
+
+<ol>
+  <li>原文中， reindex 时，使用的是从 Elasticsearch 中获取的 Mapping（应该从代码中获取），这导致代码中修改后的 data field 的设置在修改后不会在新的 index 中生效。</li>
+  <li>原文中，扩展 Search Backend 时，将 <code class="highlighter-rouge">setup_complete</code> 属性，设置为了 <code class="highlighter-rouge">True</code>，这需要重新覆盖 haystack 所有的 setup 行为 (包括有应用初始化/搜索/更新/删除/清除/重构)，都需要人工地使用管理命令操作。</li>
+</ol>
+
+<h3 id="改进">改进</h3>
+
+<ol>
+  <li>为 Reindex 的蓝绿更新画一个动态示意图</li>
+  <li>为 Reindex 的代码逻辑画一个流程图</li>
+  <li>可进一步实现为流水线上一个的通过判断 index settings 的变化，而自动触发的任务，而不需要人为干预，但会将其重新索引的行为发出通知的这样一个流程，实现全自动化的 reindex</li>
+</ol>
+
+<h2 id="参考">参考</h2>
+
+<p>https://www.elastic.co/guide/en/elasticsearch/guide/current/reindex.html
+https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html
+https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html
+http://cstrap.blogspot.jp/2015/06/dealing-with-elasticsearch-reindex-and.html</p>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E9%9B%B6%E5%AE%95%E6%9C%BA%E7%9A%84%E9%87%8D%E6%96%B0%E7%B4%A2%E5%BC%259...%20-%20http://jubel.cn/posts/django-haystack-es-reindex" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://jubel.cn/posts/django-haystack-es-reindex" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+            <a href="https://plus.google.com/share?url=http://jubel.cn/posts/django-haystack-es-reindex" title="Share on Google+" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 128 128"><path d="M40.7 55.9v16.1c0 0 15.6 0 22 0C59.2 82.5 53.8 88.2 40.7 88.2c-13.3 0-23.7-10.8-23.7-24.2s10.4-24.2 23.7-24.2c7.1 0 11.6 2.5 15.8 5.9 3.3-3.3 3.1-3.8 11.6-11.9 -7.2-6.6-16.8-10.6-27.4-10.6C18.2 23.3 0 41.5 0 64c0 22.5 18.2 40.7 40.7 40.7 33.6 0 41.8-29.3 39-48.8H40.7zM113.9 56.7V42.6h-10.1v14.1H89.4v10.1h14.5v14.5h10.1V66.8H128V56.7H113.9z"/></svg>
+            </a>
+          </div>
+
+          
+            <div id="disqus_thread" class="article-comments"></div>
+            <script src="https://jubel-github.disqus.com/embed.js" async defer></script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+          
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Powered by <a href="https://github.com/nielsenramon/chalk" rel="noreferrer noopener" target="_blank" title="Powered">Chalk</a>,
+     hosted on <a href="https://github.com/" rel="noreferrer noopener" target="_blank" title="GitHub">GitHub</a>.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59392642-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-59392642-2');
+  </script>
+
+
+<script type="text/javascript" src="/assets/vendor-2e5becc015a837c852edabccbc32f5a390d4afa7a2ca601db948ea5b9e50292a.js"></script>
+
+
+  <script type="text/javascript" src="/assets/webfonts-e3010885de8c083c4b2935d463b1649e8796191a66a1b43bb87ef04bbcce420d.js"></script>
+
+
+
+  <script type="text/javascript" src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js"></script>
+
+
+<script type="text/javascript" src="/assets/application-cd43a7f9bd8a08997bb19229cd040e7129ede0a1adf77c693b5835c9f8c2a4b1.js"></script>
+
+</body>
+</html>

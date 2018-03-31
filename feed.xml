@@ -7,6 +7,22 @@
     <atom:link href="http://jubel.cn/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>如何实现零宕机的重新索引 Elasticsearch 索引数据</title>
+        <description>How to Reindex the Elasticsearch Index data with Zero Downtime</description>
+        <pubDate>Sat, 31 Mar 2018 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/django-haystack-es-reindex</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/django-haystack-es-reindex</guid>
+      </item>
+    
+      <item>
+        <title>Haystack 可配置化的 ElasticSeach Backend</title>
+        <description>Haystack Configurable ElasticSearch Backend</description>
+        <pubDate>Sat, 31 Mar 2018 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/django-haystack-configurable-es-backend</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/django-haystack-configurable-es-backend</guid>
+      </item>
+    
+      <item>
         <title>深入剖析：持续集成 (理论篇)</title>
         <description></description>
         <pubDate>Sun, 24 Dec 2017 00:00:00 +0800</pubDate>
