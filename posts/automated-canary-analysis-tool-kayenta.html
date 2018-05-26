@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Jubel Han | 金丝雀自动化分析工具 Kayenta</title>
+  <meta name="description" content="Google and Netflix announced the launch of Kayenta, an open-source Automated Canary Analysis(ACA) tool.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="金丝雀自动化分析工具 Kayenta">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://jubel.cn/posts/automated-canary-analysis-tool-kayenta">
+  <meta property="og:description" content="Google and Netflix announced the launch of Kayenta, an open-source Automated Canary Analysis(ACA) tool.">
+  <meta property="og:site_name" content="Jubel Han">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="http://jubel.cn/posts/automated-canary-analysis-tool-kayenta">
+  <meta name="twitter:title" content="金丝雀自动化分析工具 Kayenta">
+  <meta name="twitter:description" content="Google and Netflix announced the launch of Kayenta, an open-source Automated Canary Analysis(ACA) tool.">
+
+  
+    <meta property="og:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+    <meta name="twitter:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+  
+
+  <link href="http://jubel.cn/feed.xml" type="application/rss+xml" rel="alternate" title="Jubel Han Last 10 blog posts" />
+
+  
+
+  
+    <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+    <link rel="stylesheet" type="text/css" href="/assets/light-fe5016886b51cfc7744f256dc78de7cf4456ac10ecf42e61840790a3c9428090.css">
+  
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="Jubel Han">Jubel Han</a>
+  <ul class="header-links">
+    
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://gitlab.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitLab">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-gitlab">
+  <use href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab" xlink:href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://keybase.io/jubel" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/jubel" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>金丝雀自动化分析工具 Kayenta</h1>
+            <p>Google and Netflix announced the launch of Kayenta, an open-source Automated Canary Analysis(ACA) tool.</p>
+            <div class="article-list-footer">
+              <span class="article-list-date">
+                May 27, 2018
+              </span>
+              <span class="article-list-divider">-</span>
+              <span class="article-list-minutes">
+                
+                
+                  1 minute read
+                
+              </span>
+              <span class="article-list-divider">-</span>
+              <div class="article-list-tags">
+                
+                  <a href="/tag/CI/CD">CI/CD</a>
+                
+                  <a href="/tag/canary">canary</a>
+                
+              </div>
+            </div>
+          </header>
+
+          <div class="article-content">
+            <p><a href="/assets/articles/canary-cb6aa66d59aede0c907b650ca52323b8286313c43842f7a135074e134af666cc.png" data-rjs="/assets/articles/canary-cb6aa66d59aede0c907b650ca52323b8286313c43842f7a135074e134af666cc.png" class="fluidbox-trigger">
+  <img src="/assets/articles/canary-cb6aa66d59aede0c907b650ca52323b8286313c43842f7a135074e134af666cc.png" alt="canary deployment" />
+</a></p>
+
+<h4 id="金丝雀实践">金丝雀实践</h4>
+
+<p>金丝雀部署的基本想法是路由少量生产环境的流量，例如 1%，到两个新部署的应用环境中。
+其中一个部署的是新版本应用，称之为金丝雀(<strong>canary</strong>)，另一个部署的是与线上有相同版本和配置的应用, 称之为基线 (<strong>baseline</strong>)。</p>
+
+<p>一般我们给 baseline 和 canary 都是三个新的 server 实例。</p>
+
+<p>创建新的 baseline 可以最小化初始成本和限制系统的变量(差异)部分，保持 baseline 和 canary 的一致性。</p>
+
+<p>然后对比 baseline 和 canary 之间，关键的性能和功能指标。来决定当前部署的成功性，决定是否要继续接下来的部署。</p>
+
+<p>金丝雀分析，习惯上常为人工的或是专门的、统计的不正确指标。</p>
+
+<p><strong>举例来说：</strong>对于 baseline 和 canary 之间的 server 实例，需要人为地在监控/日志系统中，检查一系列相关的指标（CPU usage, memory usage, error rate, CPU usage per request），来为下一步的部署做决定。</p>
+
+<h4 id="kayenta-实践">Kayenta 实践</h4>
+
+<p>人工或是专有的指标分析会带来下面的风险和挑战。</p>
+
+<ul>
+  <li><strong>速度和扩展性瓶颈</strong>：人工分析慢，尤其时在指标繁多，复杂度高和大规模的情况下</li>
+  <li><strong>依赖人治</strong>： 人难免犯错</li>
+  <li><strong>做出错误决定的风险</strong>：比较的是新部署的应用，短时间内的指标/考量，一些隐晦问题难发现</li>
+</ul>
+
+<p>为解决该问题，Netflix 和 Google 合作开发了一款自动化的金丝雀分析工具 <a href="https://github.com/spinnaker/kayenta">Kayenta</a></p>
+
+<p><strong>kayenta 的优势：</strong></p>
+
+<ul>
+  <li><strong>开源</strong>：避免了使用商用产品的信任度(提供敏感指标)和厂商锁定的情况</li>
+  <li><strong>支持混合云和多云</strong>：方便集成到 Spinnaker (Netfix 的部署工具)</li>
+  <li><strong>可扩展性</strong>：支持多样化的指标/数据源/环境改变等</li>
+  <li><strong>易上手</strong>：不需要自定义脚本或是人为的获取/合并指标到分析系统中</li>
+  <li><strong>灵活</strong>：支持高级案例，例如实时的边界或参数调整</li>
+  <li><strong>洞察力</strong>：支持复盘</li>
+</ul>
+
+<p><img src="https://3.bp.blogspot.com/-DgcKYpCaxx8/Wsw-GlZXteI/AAAAAAAAFVs/1Dw2i9xbKA4i4wJA-NJQuk-wTYx_DWZZQCLcBGAs/s1600/image3.png" alt="alter text" /></p>
+
+<h4 id="集成-spinnaker">集成 spinnaker</h4>
+
+<p><img src="https://4.bp.blogspot.com/-p9XeUVkUY6A/Wsw-VzgWLdI/AAAAAAAAFV0/ZVvH41G7ETgq8DrvrC8TDXOahKIySAYlwCLcBGAs/s1600/image1.png" alt="kayenta 于 spinnaker 集成" /></p>
+
+<p><strong>Metric Comparison</strong>
+<img src="https://cdn-images-1.medium.com/max/1600/1*pJdmV6L_UAru9js_8xC7hQ.png" alt="" /></p>
+
+<p><strong>Reports</strong>
+<img src="https://cdn-images-1.medium.com/max/1600/1*h65C2z-BmqQBIvcTQA0nag.png" alt="" /></p>
+
+<h4 id="更多阅读">更多阅读</h4>
+
+<ul>
+  <li><a href="https://cloudplatform.googleblog.com/2018/04/introducing-Kayenta-an-open-automated-canary-analysis-tool-from-Google-and-Netflix.html">https://cloudplatform.googleblog.com/2018/04/introducing-Kayenta-an-open-automated-canary-analysis-tool-from-Google-and-Netflix.html</a></li>
+  <li><a href="https://medium.com/netflix-techblog/automated-canary-analysis-at-netflix-with-kayenta-3260bc7acc69">https://medium.com/netflix-techblog/automated-canary-analysis-at-netflix-with-kayenta-3260bc7acc69</a></li>
+  <li><a href="https://www.spinnaker.io/guides/user/canary/#have-metrics-to-evaluate">https://www.spinnaker.io/guides/user/canary/#have-metrics-to-evaluate</a></li>
+</ul>
+
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=%E9%87%91%E4%B8%9D%E9%9B%80%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7+Kayenta%20-%20http://jubel.cn/posts/automated-canary-analysis-tool-kayenta" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://jubel.cn/posts/automated-canary-analysis-tool-kayenta" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+            <a href="https://plus.google.com/share?url=http://jubel.cn/posts/automated-canary-analysis-tool-kayenta" title="Share on Google+" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 128 128"><path d="M40.7 55.9v16.1c0 0 15.6 0 22 0C59.2 82.5 53.8 88.2 40.7 88.2c-13.3 0-23.7-10.8-23.7-24.2s10.4-24.2 23.7-24.2c7.1 0 11.6 2.5 15.8 5.9 3.3-3.3 3.1-3.8 11.6-11.9 -7.2-6.6-16.8-10.6-27.4-10.6C18.2 23.3 0 41.5 0 64c0 22.5 18.2 40.7 40.7 40.7 33.6 0 41.8-29.3 39-48.8H40.7zM113.9 56.7V42.6h-10.1v14.1H89.4v10.1h14.5v14.5h10.1V66.8H128V56.7H113.9z"/></svg>
+            </a>
+          </div>
+
+          
+            <div id="disqus_thread" class="article-comments"></div>
+            <script src="https://jubel-github.disqus.com/embed.js" async defer></script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+          
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Powered by <a href="https://github.com/nielsenramon/chalk" rel="noreferrer noopener" target="_blank" title="Powered">Chalk</a>,
+     hosted on <a href="https://github.com/" rel="noreferrer noopener" target="_blank" title="GitHub">GitHub</a>.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59392642-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-59392642-2');
+  </script>
+
+
+<script type="text/javascript" src="/assets/vendor-2e5becc015a837c852edabccbc32f5a390d4afa7a2ca601db948ea5b9e50292a.js"></script>
+
+
+  <script type="text/javascript" src="/assets/webfonts-e3010885de8c083c4b2935d463b1649e8796191a66a1b43bb87ef04bbcce420d.js"></script>
+
+
+
+  <script type="text/javascript" src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js"></script>
+
+
+<script type="text/javascript" src="/assets/application-cd43a7f9bd8a08997bb19229cd040e7129ede0a1adf77c693b5835c9f8c2a4b1.js"></script>
+
+</body>
+</html>
