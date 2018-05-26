@@ -29,7 +29,7 @@
   
     <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
     <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
-    <link rel="stylesheet" type="text/css" href="/assets/light-24d6e87da8032aa74d32e3a6ae969d8836edd504c2399ce9b8350303f4fea03b.css">
+    <link rel="stylesheet" type="text/css" href="/assets/light-fe5016886b51cfc7744f256dc78de7cf4456ac10ecf42e61840790a3c9428090.css">
   
 </head>
 
@@ -124,7 +124,7 @@
               <span class="article-list-minutes">
                 
                 
-                  3 minute read
+                  4 minute read
                 
               </span>
               <span class="article-list-divider">-</span>
@@ -253,45 +253,45 @@
 
 <p>最后，更新 Django settings:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'myapp.backends.ConfigurableElasticSearchEngine',
-        'URL': env_var('HAYSTACK_URL', 'http://127.0.0.1:9200/'),
-        'INDEX_NAME': 'haystack',
-    },
-}
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HAYSTACK_CONNECTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'default'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">'ENGINE'</span><span class="p">:</span> <span class="s">'myapp.backends.ConfigurableElasticSearchEngine'</span><span class="p">,</span>
+        <span class="s">'URL'</span><span class="p">:</span> <span class="n">env_var</span><span class="p">(</span><span class="s">'HAYSTACK_URL'</span><span class="p">,</span> <span class="s">'http://127.0.0.1:9200/'</span><span class="p">),</span>
+        <span class="s">'INDEX_NAME'</span><span class="p">:</span> <span class="s">'haystack'</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span>
 
-ELASTICSEARCH_INDEX_SETTINGS =
- {
-    'settings': {
-        "max_result_window": 20000,
-        "analysis": {
-            "analyzer": {
-                "my_ngram_analyzer": {
-                    "type": "custom",
-                    "tokenizer": "lowercase",
-                    "filter": ["haystack_ngram"]
-                }
-            },
-            "tokenizer": {
-                "haystack_ngram_tokenizer": {
-                    "type": "nGram",
-                    "min_gram": 3,
-                    "max_gram": 15,
-                }
-            },
-            "filter": {
-                "haystack_ngram": {
-                    "type": "nGram",
-                    "min_gram": 3,
-                    "max_gram": 15
-                }
-            }
-        }
-    }
-}
+<span class="n">ELASTICSEARCH_INDEX_SETTINGS</span> <span class="o">=</span>
+ <span class="p">{</span>
+    <span class="s">'settings'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">"max_result_window"</span><span class="p">:</span> <span class="mi">20000</span><span class="p">,</span>
+        <span class="s">"analysis"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">"analyzer"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">"my_ngram_analyzer"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s">"type"</span><span class="p">:</span> <span class="s">"custom"</span><span class="p">,</span>
+                    <span class="s">"tokenizer"</span><span class="p">:</span> <span class="s">"lowercase"</span><span class="p">,</span>
+                    <span class="s">"filter"</span><span class="p">:</span> <span class="p">[</span><span class="s">"haystack_ngram"</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s">"tokenizer"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">"haystack_ngram_tokenizer"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s">"type"</span><span class="p">:</span> <span class="s">"nGram"</span><span class="p">,</span>
+                    <span class="s">"min_gram"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">"max_gram"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s">"filter"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">"haystack_ngram"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s">"type"</span><span class="p">:</span> <span class="s">"nGram"</span><span class="p">,</span>
+                    <span class="s">"min_gram"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">"max_gram"</span><span class="p">:</span> <span class="mi">15</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-ELASTICSEARCH_DEFAULT_ANALYZER = "snowball"
+<span class="n">ELASTICSEARCH_DEFAULT_ANALYZER</span> <span class="o">=</span> <span class="s">"snowball"</span>
 </code></pre></div></div>
 
 <p>在上述的几个几个步骤中我们实现了可配置化的 Search Backend 和更加灵活的字段设置，但是这是否真的到这里就完了呢？答案是否定的！</p>
@@ -313,8 +313,10 @@ ELASTICSEARCH_DEFAULT_ANALYZER = "snowball"
 
 <h2 id="参考">参考</h2>
 
-<p>https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html
-https://wellfire.co/learn/custom-haystack-elasticsearch-backend/</p>
+<ul>
+  <li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html">https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html</a></li>
+  <li><a href="https://wellfire.co/learn/custom-haystack-elasticsearch-backend/">https://wellfire.co/learn/custom-haystack-elasticsearch-backend/</a></li>
+</ul>
 
           </div>
           <div class="article-share">

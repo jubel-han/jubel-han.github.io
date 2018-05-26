@@ -7,6 +7,14 @@
     <atom:link href="http://jubel.cn/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Python 3.7 新特性 Data Class</title>
+        <description>Python 3.7 introduced a new way that helping for defining the data structure in a more convenient way: data class</description>
+        <pubDate>Wed, 18 Apr 2018 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/data-class-python-3-7</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/data-class-python-3-7</guid>
+      </item>
+    
+      <item>
         <title>如何实现零宕机的重新索引 Elasticsearch 索引数据</title>
         <description>How to Reindex the Elasticsearch Index data with Zero Downtime</description>
         <pubDate>Sat, 31 Mar 2018 00:00:00 +0800</pubDate>

@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Jubel Han | Python 3.7 新特性 Data Class</title>
+  <meta name="description" content="Python 3.7 introduced a new way that helping for defining the data structure in a more convenient way: data class">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="Python 3.7 新特性 Data Class">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://jubel.cn/posts/data-class-python-3-7">
+  <meta property="og:description" content="Python 3.7 introduced a new way that helping for defining the data structure in a more convenient way: data class">
+  <meta property="og:site_name" content="Jubel Han">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="http://jubel.cn/posts/data-class-python-3-7">
+  <meta name="twitter:title" content="Python 3.7 新特性 Data Class">
+  <meta name="twitter:description" content="Python 3.7 introduced a new way that helping for defining the data structure in a more convenient way: data class">
+
+  
+    <meta property="og:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+    <meta name="twitter:image" content="http://jubel.cn/assets/og-image-ee46bbc61b334e821e81534b1fd43f3fee6f020ec174b3c2114445695fd48c01.jpg">
+  
+
+  <link href="http://jubel.cn/feed.xml" type="application/rss+xml" rel="alternate" title="Jubel Han Last 10 blog posts" />
+
+  
+
+  
+    <link rel="icon" type="image/x-icon" href="/assets/favicon-light-a98c41efc5ed9fcc06ac664c9e2f7a9b3c3b2e0a52357d221fe382f6f4abc8fc.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-87d1f2a3a19b1500e5c1626a0492025ca5f7f97d24540dc5900288e92112925a.png">
+    <link rel="stylesheet" type="text/css" href="/assets/light-fe5016886b51cfc7744f256dc78de7cf4456ac10ecf42e61840790a3c9428090.css">
+  
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="Jubel Han">Jubel Han</a>
+  <ul class="header-links">
+    
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://gitlab.com/jubel-han" rel="noreferrer noopener" target="_blank" title="GitLab">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-gitlab">
+  <use href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab" xlink:href="/assets/gitlab-cd27fc8b2a8ff6eb466c87e5bd6c8311a45ae0fa6eb8ce830a9378097f16647e.svg#icon-gitlab"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://keybase.io/jubel" rel="noreferrer noopener" target="_blank" title="Keybase">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-keybase">
+  <use href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase" xlink:href="/assets/keybase-4004cb8fb3e3f1f748f19fbea8a591d0bf5a00865e53977d673f2b09fcabf6e4.svg#icon-keybase"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://hub.docker.com/r/jubel" rel="noreferrer noopener" target="_blank" title="Docker Hub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-docker">
+  <use href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker" xlink:href="/assets/docker-c339e74d6b786fbde73b16d23c150b731f34e6afba1693051596237af7ff9f2d.svg#icon-docker"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+        <article class="article scrollappear">
+          <header class="article-header">
+            <h1>Python 3.7 新特性 Data Class</h1>
+            <p>Python 3.7 introduced a new way that helping for defining the data structure in a more convenient way: data class</p>
+            <div class="article-list-footer">
+              <span class="article-list-date">
+                April 18, 2018
+              </span>
+              <span class="article-list-divider">-</span>
+              <span class="article-list-minutes">
+                
+                
+                  10 minute read
+                
+              </span>
+              <span class="article-list-divider">-</span>
+              <div class="article-list-tags">
+                
+                  <a href="/tag/python">python</a>
+                
+              </div>
+            </div>
+          </header>
+
+          <div class="article-content">
+            <p>在 Python 3.7 版本中增加了数据类(data class)这一新功能, 类似于其他语言中的 <code class="highlighter-rouge">struct</code></p>
+
+<p>它就是一个使用装饰器创建的类：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DataClassCard</span><span class="p">:</span>
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div></div>
+
+<p>它帮助我们实现了，非常方便的使用 class 定义数据结构，但相对于常规的类，它默认封装了一些对于数据结构来说，友好的特性，
+下面我们就一一介绍这些特性</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">=</span> <span class="n">DataClassCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'Hearts'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span><span class="o">.</span><span class="n">rank</span>
+<span class="s">'Q'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span>
+<span class="n">DataClassCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'Q'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'Hearts'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">==</span> <span class="n">DataClassCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'Hearts'</span><span class="p">)</span>
+<span class="bp">True</span>
+</code></pre></div></div>
+
+<p>上面的 data class 样例， 如果用普通类表示，应该是这样的：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">RegularCard</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">suit</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">rank</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suit</span> <span class="o">=</span> <span class="n">suit</span>
+</code></pre></div></div>
+
+<p>使用普通 class 的方式，虽然也没有写太多的代码，但是我们已经可以看出一些它相对于数据类的缺点：
+仅为了简单的初始化类，<code class="highlighter-rouge">rank</code> 和 <code class="highlighter-rouge">suit</code> 就已经重复出现了3次，另外，实例对象的表示不完全是基于描述性的(缺少<code class="highlighter-rouge">.__repr__()</code> 方法)：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">=</span> <span class="n">RegularCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'Hearts'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span><span class="o">.</span><span class="n">rank</span>
+<span class="s">'Q'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span>
+<span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">RegularCard</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0x7fb6eee35d30</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c"># bacause of leaking developer-friendly __repr__ method</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">==</span> <span class="n">RegularCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'Hearts'</span><span class="p">)</span>
+<span class="bp">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c"># does not support comparing, because of leaking the __eq__ method</span>
+</code></pre></div></div>
+
+<p>data class 很好的帮助我们提供了这样的场景下，开箱即用的功能。
+默认 data class 提供了 <code class="highlighter-rouge">.__repr__()</code> 和 <code class="highlighter-rouge">.__eq__()</code> 方法，实现了友好的输出和基本的对象间比较功能。</p>
+
+<p>为了帮助我们更好的理解 data class 提供的方便之处，该文章中我们将覆盖：</p>
+
+<ul>
+  <li>在 data class 中如何给字段 (fields) 添加默认值</li>
+  <li>data class 实例间的排序和比较</li>
+  <li>在 data class 中如何表示可变数据</li>
+  <li>data class 的继承</li>
+</ul>
+
+<p>在正式介绍 data class 之前我们看一下，当前我们在定义数据结构时，可以代替 data class 的做法。</p>
+
+<h4 id="alternatives">Alternatives</h4>
+
+<p>在 python 还没有引入 data class 的情况下，为表示一个简单的数据结构，你也许在用<a href="https://dbader.org/blog/records-structs-and-data-transfer-objects-in-python">元组或字典</a> 或许是 <a href="https://dbader.org/blog/writing-clean-python-with-namedtuples">namedtuple</a>.</p>
+
+<p>总的上来说，相对与 data class，元组或字典不是很友好, <code class="highlighter-rouge">namedtuple</code>，提供了更接近 data class 的功能，它支持比较操作，但也有一些局限：</p>
+
+<p>例如：</p>
+<ul>
+  <li>在 namedtuple 中给字段添加默认值不是很方便</li>
+  <li>namedtuple 对象是不可变的，字段的值不可修改，在一些场景下这很好，但不够灵活</li>
+</ul>
+
+<p>data class 并不是指在替换 namedtuple，在你仍然需要数据结构为 tuple 的场景下，namedtuple，仍然是比较好的选择。</p>
+
+<p>取代 data class 的另一个选择是 <a href="http://www.attrs.org/">attrs 项目</a>，也是 <a href="https://mail.python.org/pipermail/python-dev/2017-December/151034.html">data class 的灵感来源</a>之一, 安装 <code class="highlighter-rouge">attrs</code>之后，我们可以这样写：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="nd">@attr.s</span>
+<span class="k">class</span> <span class="nc">AttrsCard</span><span class="p">:</span>
+    <span class="n">rank</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">()</span>
+    <span class="n">suit</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">ib</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>它提供了与 <code class="highlighter-rouge">namedtuple</code> 和 <code class="highlighter-rouge">data class</code> 一摸一样的功能，甚至还有一些额外的特性(<code class="highlighter-rouge">converters</code>/<code class="highlighter-rouge">validators</code>)，但是相对于 <code class="highlighter-rouge">data class</code>, 他不是标准库的一部分，我们仍然需要安装这个包。</p>
+
+<p>当然，还有很多<a href="https://www.python.org/dev/peps/pep-0557/#rationale">其他的一些同类代替</a>：</p>
+<ul>
+  <li><a href="https://docs.python.org/library/typing.html#typing.NamedTuple">typing.NamedTuple</a></li>
+  <li><a href="https://pypi.org/project/namedlist/">namedlist</a></li>
+  <li><a href="https://pypi.org/project/attrdict/">attrdict</a></li>
+  <li><a href="https://pypi.org/project/plumber/">plumber</a></li>
+  <li><a href="https://pypi.org/project/fields/">fields</a></li>
+</ul>
+
+<h4 id="data-classes-的基础上手">Data Classes 的基础上手</h4>
+
+<ul>
+  <li><strong>创建 data class</strong></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span>
+</code></pre></div></div>
+
+<p>添加装饰器 <a href="https://realpython.com/primer-on-python-decorators/"><code class="highlighter-rouge">@dataclass</code></a>， 表示我们创建的是一个 data class.</p>
+
+<p>紧接着 <code class="highlighter-rouge">class Position:</code> 的下一行，开始列举我们的字段(fields).</p>
+
+<p>字段名称后的 <code class="highlighter-rouge">:</code> 符号，是 python 3.6 新添加的称之为 <a href="https://www.python.org/dev/peps/pep-0526/">变量注释</a> 的功能</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="s">'Oslo'</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">59.9</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="n">Position</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'Oslo'</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">10.8</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="mf">59.9</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pos</span><span class="o">.</span><span class="n">lat</span>
+<span class="mf">59.9</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s">'{pos.name} is at {pos.lat}°N, {pos.lon}°E'</span><span class="p">)</span>
+<span class="n">Oslo</span> <span class="ow">is</span> <span class="n">at</span> <span class="mf">59.9</span><span class="err">°</span><span class="n">N</span><span class="p">,</span> <span class="mf">10.8</span><span class="err">°</span><span class="n">E</span>
+</code></pre></div></div>
+
+<p>也可以这样创建 Data Class</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">make_dataclass</span>
+
+<span class="n">Position</span> <span class="o">=</span> <span class="n">make_dataclass</span><span class="p">(</span><span class="s">'Position'</span><span class="p">,</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'lat'</span><span class="p">,</span> <span class="s">'lon'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>与我们创建 namedtulpe 的方法相同。</p>
+
+<p><strong>NOTES:</strong></p>
+
+<p>data class，就是一个常规的 class, 唯一不同的是，它添加了基本的<a href="https://docs.python.org/reference/datamodel.html#basic-customization">数据模型方法</a>，像 <code class="highlighter-rouge">.__init__()</code>, <code class="highlighter-rouge">.__repr__()</code>, 和 <code class="highlighter-rouge">.__eq__()</code>。</p>
+
+<h4 id="默认值">默认值</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+</code></pre></div></div>
+
+<p>和我们在常规类中，使用 <code class="highlighter-rouge">__init__()</code> 指定默认值类似。</p>
+
+<h5 id="类型暗示hints">类型暗示(Hints)</h5>
+
+<p>在 data class 中，我们需要给每一个字段添加变量注释(typing)，字段可以是任何类型(<code class="highlighter-rouge">typing.Any</code>)。<code class="highlighter-rouge">没有指定类型暗示的字段不会作为数据类的一部分</code>。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WithoutExplicitTypes</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="mi">42</span>
+</code></pre></div></div>
+
+<p>需要注意的是，在 python 中，尽管我们定义了变量注释，但是在真正运行的时候，我们仍然可以传递任何类型的变脸，而解释器并不会抛出任何异常（当然你的逻辑代码可能会），这也是 python 语言的特性，<a href="https://www.python.org/dev/peps/pep-0484/#non-goals">永远作为动态类型的语言</a>, 想要在你的代码中运行类型检查，可以使用类似 <a href="http://mypy-lang.org/">Mypy</a> 这样的工具</p>
+
+<p>例如，在下面的例子中，我们虽然定义了参数 <code class="highlighter-rouge">lon</code> 的变量注释为 <code class="highlighter-rouge">float</code>, 但是在运行时，我们可以传递 <code class="highlighter-rouge">string</code>，而并不会报什么错误。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">Position</span><span class="p">(</span><span class="mf">3.14</span><span class="p">,</span> <span class="s">'pi day'</span><span class="p">,</span> <span class="mi">2018</span><span class="p">)</span>
+<span class="n">Position</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="mf">3.14</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="s">'pi day'</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="mi">2018</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h5 id="添加方法">添加方法</h5>
+
+<p>和普通类完全相同，我们也可以为 data class 添加方法</p>
+
+<h4 id="data-classe-高级使用">Data Classe 高级使用</h4>
+
+<p>下面我们将介绍 data class 的高级用法，包括有：</p>
+
+<ul>
+  <li>装饰器 <code class="highlighter-rouge">@dataclass</code> 的参数</li>
+  <li><code class="highlighter-rouge">field()</code> 函数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">PlayingCard</span><span class="p">:</span>
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Deck</span><span class="p">:</span>
+    <span class="n">cards</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PlayingCard</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>创建一个只有两张卡片的牌叠</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">=</span> <span class="n">PlayingCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'Hearts'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ace_of_spades</span> <span class="o">=</span> <span class="n">PlayingCard</span><span class="p">(</span><span class="s">'A'</span><span class="p">,</span> <span class="s">'Spades'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">two_cards</span> <span class="o">=</span> <span class="n">Deck</span><span class="p">([</span><span class="n">queen_of_hearts</span><span class="p">,</span> <span class="n">ace_of_spades</span><span class="p">])</span>
+<span class="n">Deck</span><span class="p">(</span><span class="n">cards</span><span class="o">=</span><span class="p">[</span><span class="n">PlayingCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'Q'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'Hearts'</span><span class="p">),</span>
+            <span class="n">PlayingCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'A'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'Spades'</span><span class="p">)])</span>
+</code></pre></div></div>
+
+<h5 id="高级默认值">高级默认值</h5>
+
+<p>假设我们想要给牌叠添加一个默认值，例如一副完整的52张牌(不含大王和小王)。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RANKS</span> <span class="o">=</span> <span class="s">'2 3 4 5 6 7 8 9 10 J Q K A'</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">SUITS</span> <span class="o">=</span> <span class="s">'♣ ♢ ♡ ♠'</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">make_french_deck</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">PlayingCard</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SUITS</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">RANKS</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>理论上来说，我们可以使用这个函数作为 <code class="highlighter-rouge">Deck.cards</code> 的默认值</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Deck</span><span class="p">:</span>  <span class="c"># Will NOT work</span>
+    <span class="n">cards</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PlayingCard</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_french_deck</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>需要注意的是，我们最好避免该实现方法，因为它是 Python 中最常见的反模式：<a href="http://docs.python-guide.org/en/latest/writing/gotchas/#mutable-default-arguments">使用可变默认值作为参数</a>，这会导致 <code class="highlighter-rouge">Deck</code> 的所有实例都是使用一个相同的列表对象作为<code class="highlighter-rouge">cards</code> 属性的默认值。这意味着，如果我们从其中的一个 <code class="highlighter-rouge">Deck</code> 实例的 <code class="highlighter-rouge">cards</code> 属性中移除了一个卡片，那这个卡片就会在所有的 <code class="highlighter-rouge">Deck</code> 实例中都不存在。</p>
+
+<p>实际上，data class <a href="https://www.python.org/dev/peps/pep-0557/#mutable-default-values">会阻止我们这样做</a>，上面的代码会抛出一个 <code class="highlighter-rouge">ValueError</code>.</p>
+
+<p>相反的，data class 使用一个叫做 <code class="highlighter-rouge">default_factory</code> 的东西来创建可变的默认值。使用 <code class="highlighter-rouge">default_factory</code> (或是data class 中其他有趣的特性),我们需要使用 <code class="highlighter-rouge">field()</code> 函数：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Deck</span><span class="p">:</span>
+    <span class="n">cards</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PlayingCard</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">make_french_deck</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>参数 <code class="highlighter-rouge">default_factory</code> 可以为, 任何没有参数的可调用对象(如果有参数可以使用 <code class="highlighter-rouge">functools.partial</code> 去掉).</p>
+
+<p><code class="highlighter-rouge">field()</code> 函数可以用来自定义 data class 中每个的字段，field 的其他一些参数可以参考：</p>
+
+<ul>
+  <li><strong>default</strong>: Default value of the field</li>
+  <li><strong>default_factory</strong>: Function that returns the initial value of the field</li>
+  <li><strong>init</strong>: Use field in .<strong>init</strong>() method? (Default is True.)</li>
+  <li><strong>repr</strong>: Use field in repr of the object? (Default is True.)</li>
+  <li><strong>compare</strong>: Include the field in comparisons? (Default is True.)</li>
+  <li><strong>hash</strong>: Include the field when calculating hash()? (Default is to use the same as for compare.)</li>
+  <li><strong>metadata</strong>: A mapping with information about the field</li>
+</ul>
+
+<h4 id="data-class-实例间的比较">data class 实例间的比较</h4>
+
+<p>还是用我们之前的例子：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PlayingCard</span><span class="p">:</span>
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s">'{self.suit}{self.rank}'</span>
+</code></pre></div></div>
+
+<p>在我们创建 data class 的时候，我们只要为装饰器，指定参数 <code class="highlighter-rouge">order=True</code>, 我们的 data class 就支持排序和比较了</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">=</span> <span class="n">PlayingCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'♡'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ace_of_spades</span> <span class="o">=</span> <span class="n">PlayingCard</span><span class="p">(</span><span class="s">'A'</span><span class="p">,</span> <span class="s">'♠'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ace_of_spades</span> <span class="o">&gt;</span> <span class="n">queen_of_hearts</span>
+<span class="bp">False</span>
+</code></pre></div></div>
+
+<p>data class 支持的其他的参数：</p>
+
+<ul>
+  <li><strong>init</strong>: Add .<strong>init</strong>() method? (Default is True.)</li>
+  <li><strong>repr</strong>: Add .<strong>repr</strong>() method? (Default is True.)</li>
+  <li><strong>eq</strong>: Add .<strong>eq</strong>() method? (Default is True.)</li>
+  <li><strong>order</strong>: Add ordering methods? (Default is False.)</li>
+  <li><strong>unsafe_hash</strong>: Force the addition of a .<strong>hash</strong>() method? (Default is False.)</li>
+  <li><strong>frozen</strong>: If True, assigning to fields raise an exception. (Default is False.)</li>
+</ul>
+
+<p>需要注意的是，上面的比较，却不是按照我们预想的那样排序的，它是按照字母顺序排的，下面实现我们的牌面排序：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+<span class="n">RANKS</span> <span class="o">=</span> <span class="s">'2 3 4 5 6 7 8 9 10 J Q K A'</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">SUITS</span> <span class="o">=</span> <span class="s">'♣ ♢ ♡ ♠'</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PlayingCard</span><span class="p">:</span>
+    <span class="n">sort_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sort_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">RANKS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">SUITS</span><span class="p">)</span>
+                           <span class="o">+</span> <span class="n">SUITS</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">suit</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">f</span><span class="s">'{self.suit}{self.rank}'</span>
+</code></pre></div></div>
+
+<p>我们给 <code class="highlighter-rouge">PalyingCard</code> 添加了一个 <code class="highlighter-rouge">sort_index</code> 字段，并且指定了 <code class="highlighter-rouge">init=False</code> 和 <code class="highlighter-rouge">repr=False</code>, 把该字段隐藏了起来，并且不需要初始化，因为它是由后两个字段<code class="highlighter-rouge">rank</code> 和 <code class="highlighter-rouge">suit</code> 计算得来的。</p>
+
+<p>另一个关键的特殊方法是 <code class="highlighter-rouge">__post_init__()</code>, 它允许我们在<code class="highlighter-rouge">.__init__()</code> 方法被调用后，处理一些特殊流程操作。就像它的字面含义: <code class="highlighter-rouge">post</code> after <code class="highlighter-rouge">init</code>.</p>
+
+<p>查看我们排序后的牌叠</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">Deck</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">make_french_deck</span><span class="p">()))</span>
+</code></pre></div></div>
+
+<p>也可以参看随机排序的牌叠（当然也可以也不用指定参数<code class="highlighter-rouge">order=True</code>）</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">sample</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Deck</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="n">make_french_deck</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h4 id="不可变的-data-class">不可变的 data class</h4>
+
+<p>前面我们看到的 <code class="highlighter-rouge">namedtuple</code> 的一个特性，便是不可变的.对于 data class 来说，它也可以使 data class 不可变，在我们创建data class 的时候，指定 <code class="highlighter-rouge">frozen=True</code>, 这样我们创建的 data class 就是不可变的。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="s">'Oslo'</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">59.9</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pos</span><span class="o">.</span><span class="n">name</span>
+<span class="s">'Oslo'</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">pos</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">'Stockholm'</span>
+<span class="n">dataclasses</span><span class="o">.</span><span class="n">FrozenInstanceError</span><span class="p">:</span> <span class="n">cannot</span> <span class="n">assign</span> <span class="n">to</span> <span class="n">field</span> <span class="s">'name'</span>
+</code></pre></div></div>
+
+<p>需要注意的是，如果我们的 data class 中仍然包含着可变的字段，它的字段将仍然可以被改变，这也是 python 中所有<a href="https://www.youtube.com/watch?v=p9ppfvHv2Us">嵌套的数据结构的特性</a>.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ImmutableCard</span><span class="p">:</span>
+    <span class="n">rank</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">suit</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">ImmutableDeck</span><span class="p">:</span>
+    <span class="n">cards</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PlayingCard</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>即使 <code class="highlighter-rouge">ImmutableCard</code> 和 <code class="highlighter-rouge">ImmutableDeck</code> 是不可变的, 但是卡片列表却不是：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">queen_of_hearts</span> <span class="o">=</span> <span class="n">ImmutableCard</span><span class="p">(</span><span class="s">'Q'</span><span class="p">,</span> <span class="s">'♡'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ace_of_spades</span> <span class="o">=</span> <span class="n">ImmutableCard</span><span class="p">(</span><span class="s">'A'</span><span class="p">,</span> <span class="s">'♠'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">deck</span> <span class="o">=</span> <span class="n">ImmutableDeck</span><span class="p">([</span><span class="n">queen_of_hearts</span><span class="p">,</span> <span class="n">ace_of_spades</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">deck</span>
+<span class="n">ImmutableDeck</span><span class="p">(</span><span class="n">cards</span><span class="o">=</span><span class="p">[</span><span class="n">ImmutableCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'Q'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'♡'</span><span class="p">),</span> <span class="n">ImmutableCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'A'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'♠'</span><span class="p">)])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">deck</span><span class="o">.</span><span class="n">cards</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ImmutableCard</span><span class="p">(</span><span class="s">'7'</span><span class="p">,</span> <span class="s">'♢'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">deck</span>
+<span class="n">ImmutableDeck</span><span class="p">(</span><span class="n">cards</span><span class="o">=</span><span class="p">[</span><span class="n">ImmutableCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'7'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'♢'</span><span class="p">),</span> <span class="n">ImmutableCard</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s">'A'</span><span class="p">,</span> <span class="n">suit</span><span class="o">=</span><span class="s">'♠'</span><span class="p">)])</span>
+</code></pre></div></div>
+
+<p>为避免这个问题，我们需要保证所有的字段类型都是不可变的(还需要注意运行时不会做类型检查)，<code class="highlighter-rouge">ImmutableDeck</code> 应该用 tuple 而不是 list.</p>
+
+<h4 id="data-class-的继承">data class 的继承</h4>
+
+<p>与常规类相似，我们也可以创建 data class 的子类：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Capital</span><span class="p">(</span><span class="n">Position</span><span class="p">):</span>
+    <span class="n">country</span><span class="p">:</span> <span class="nb">str</span>
+</code></pre></div></div>
+
+<p>结果如下：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">Capital</span><span class="p">(</span><span class="s">'Oslo'</span><span class="p">,</span> <span class="mf">10.8</span><span class="p">,</span> <span class="mf">59.9</span><span class="p">,</span> <span class="s">'Norway'</span><span class="p">)</span>
+<span class="n">Capital</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'Oslo'</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">10.8</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="mf">59.9</span><span class="p">,</span> <span class="n">country</span><span class="o">=</span><span class="s">'Norway'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>如果我们的基类中的任何字段存在默认值</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Capital</span><span class="p">(</span><span class="n">Position</span><span class="p">):</span>
+    <span class="n">country</span><span class="p">:</span> <span class="nb">str</span>  <span class="c"># Does NOT work</span>
+</code></pre></div></div>
+
+<p>代码会马上崩溃，报出 <code class="highlighter-rouge">TypeError</code> 错误，原因是因为 <code class="highlighter-rouge">country</code> 在默认参数后面，因为 <code class="highlighter-rouge">lon</code> 和 <code class="highlighter-rouge">lat</code> 是有默认值的。</p>
+
+<p><code class="highlighter-rouge">.__init__()</code> 方法可以理解为：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">country</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="o">...</span>
+</code></pre></div></div>
+<p><a href="https://docs.python.org/reference/compound_stmts.html#function-definitions">如果一个参数，有默认值，那它之后的所有参数也必须有默认值</a></p>
+
+<p>也就是说，如果我们的基类中的字段幽默值，那我们在子类中新添加的字段也必须包含默认值。</p>
+
+<p>另外一个我们需要注意的是，即时我们在子类中重新覆盖了基类的某个字段值，我们所有字段，在 <code class="highlighter-rouge">.__init__()</code> 中的顺序仍然为覆盖前的顺序</p>
+
+<h4 id="优化-data-class">优化 data class</h4>
+
+<p>使用 <code class="highlighter-rouge">slots</code></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SimplePosition</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span>
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">SlotPosition</span><span class="p">:</span>
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s">'name'</span><span class="p">,</span> <span class="s">'lon'</span><span class="p">,</span> <span class="s">'lat'</span><span class="p">]</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">lon</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">.__slots__</code> 会减少内存的消耗, 具体可以参考 <a href="https://docs.python.org/reference/datamodel.html#slots">slots</a></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pympler</span> <span class="kn">import</span> <span class="n">asizeof</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">simple</span> <span class="o">=</span> <span class="n">SimplePosition</span><span class="p">(</span><span class="s">'London'</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">51.5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">slot</span> <span class="o">=</span> <span class="n">SlotPosition</span><span class="p">(</span><span class="s">'Madrid'</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7</span><span class="p">,</span> <span class="mf">40.4</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">asizeof</span><span class="o">.</span><span class="n">asizesof</span><span class="p">(</span><span class="n">simple</span><span class="p">,</span> <span class="n">slot</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">440</span><span class="p">,</span> <span class="mi">248</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">timeit</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">timeit</span><span class="p">(</span><span class="s">'slot.name'</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="s">"from position import SlotPosition; slot=SlotPosition('Oslo', 10.8, 59.9)"</span><span class="p">)</span>
+<span class="mf">0.05882283499886398</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">timeit</span><span class="p">(</span><span class="s">'simple.name'</span><span class="p">,</span> <span class="n">setup</span><span class="o">=</span><span class="s">"from position import SimplePosition; simple=SimplePosition('Oslo', 10.8, 59.9)"</span><span class="p">)</span>
+<span class="mf">0.09207444800267695</span>
+</code></pre></div></div>
+
+<h4 id="总结">总结</h4>
+
+<p>Data class 是 Python 3.7 的一个新特性，使用 data class 我们将在不需要刻板的初始化类，以及它的表示和对象间的比较。</p>
+
+<p>参考：</p>
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=T-TwcmT6Rcw">关于 data class 的演讲</a></li>
+  <li><a href="https://github.com/ericvsmith/dataclasses/issues?utf8=%E2%9C%93&amp;q=">关于 data class 的 PEP 557 和 GitHub repo 的讨论</a></li>
+  <li><a href="https://github.com/ericvsmith/dataclasses">python 3.6 中支持 data class</a></li>
+</ul>
+
+          </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=Python+3.7+%E6%96%B0%E7%89%B9%E6%80%A7+Data+Class%20-%20http://jubel.cn/posts/data-class-python-3-7" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=http://jubel.cn/posts/data-class-python-3-7" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+            <a href="https://plus.google.com/share?url=http://jubel.cn/posts/data-class-python-3-7" title="Share on Google+" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 128 128"><path d="M40.7 55.9v16.1c0 0 15.6 0 22 0C59.2 82.5 53.8 88.2 40.7 88.2c-13.3 0-23.7-10.8-23.7-24.2s10.4-24.2 23.7-24.2c7.1 0 11.6 2.5 15.8 5.9 3.3-3.3 3.1-3.8 11.6-11.9 -7.2-6.6-16.8-10.6-27.4-10.6C18.2 23.3 0 41.5 0 64c0 22.5 18.2 40.7 40.7 40.7 33.6 0 41.8-29.3 39-48.8H40.7zM113.9 56.7V42.6h-10.1v14.1H89.4v10.1h14.5v14.5h10.1V66.8H128V56.7H113.9z"/></svg>
+            </a>
+          </div>
+
+          
+            <div id="disqus_thread" class="article-comments"></div>
+            <script src="https://jubel-github.disqus.com/embed.js" async defer></script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+          
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+    Powered by <a href="https://github.com/nielsenramon/chalk" rel="noreferrer noopener" target="_blank" title="Powered">Chalk</a>,
+     hosted on <a href="https://github.com/" rel="noreferrer noopener" target="_blank" title="GitHub">GitHub</a>.
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-59392642-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-59392642-2');
+  </script>
+
+
+<script type="text/javascript" src="/assets/vendor-2e5becc015a837c852edabccbc32f5a390d4afa7a2ca601db948ea5b9e50292a.js"></script>
+
+
+  <script type="text/javascript" src="/assets/webfonts-e3010885de8c083c4b2935d463b1649e8796191a66a1b43bb87ef04bbcce420d.js"></script>
+
+
+
+  <script type="text/javascript" src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js"></script>
+
+
+<script type="text/javascript" src="/assets/application-cd43a7f9bd8a08997bb19229cd040e7129ede0a1adf77c693b5835c9f8c2a4b1.js"></script>
+
+</body>
+</html>

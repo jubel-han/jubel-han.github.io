@@ -608,13 +608,13 @@ abbr {
 
 blockquote {
   padding: 1px 0 15px 8px;
-  margin: 10px 0 0 10px;
+  margin: 10px 0 0 0;
   font-family: "Lato", Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-style: italic;
   line-height: 1.8;
   color: #888181;
-  border-left: 10px solid #ebeaea;
+  border-left: 8px solid #ecebeb66;
   background-color: #FBFBFB; }
 
 hr {
@@ -1015,10 +1015,10 @@ img {
 .highlight {
   padding: 5px;
   margin: 0;
-  margin: 10px 0;
   overflow: auto;
   font-weight: 400;
-  background: #faf9f9;
+  color: #fff;
+  background-color: #050505;
   border-radius: 4px; }
   .highlight pre {
     margin: 0; }
@@ -1026,14 +1026,13 @@ img {
 .highlighter-rouge {
   padding: 2px 4px;
   font-size: 14px;
-  color: #d14;
   background: #faf9f9;
   border: 1px solid #ebeaea;
   border-radius: 1px; }
 
 @media all and (max-width: 767px) {
   .highlight {
-    padding: 25px;
+    padding: 0;
     font-size: 14px; } }
 .highlight .c {
   font-style: italic;
@@ -1127,6 +1126,9 @@ img {
 
 .highlight .s {
   color: #d14; }
+
+.highlight .n {
+  color: #008080; }
 
 .highlight .na {
   color: #008080; }

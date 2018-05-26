@@ -501,13 +501,13 @@ abbr {
 
 blockquote {
   padding: 1px 0 15px 8px;
-  margin: 10px 0 0 10px;
+  margin: 10px 0 0 0;
   font-family: "Lato", Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-style: italic;
   line-height: 1.8;
   color: #888181;
-  border-left: 10px solid #ebeaea;
+  border-left: 8px solid #ecebeb66;
   background-color: #FBFBFB; }
 
 hr {
