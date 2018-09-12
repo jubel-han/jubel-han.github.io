@@ -143,7 +143,7 @@
           <div class="article-content">
             <h2 id="一句话">一句话</h2>
 
-<p>在使用 Django 开发 web 应用，使用 <a href="https://github.com/django-haystack/django-haystack">Haystack</a> 作为我们的搜索接口，<a href="https://github.com/elastic/elasticsearch">Elasticsearch</a> 作为搜索引擎背景下，因为 haystack 硬编码了 elasticsearch 的 settings 和 mappings，所以当我们需要自定义 elasticsearch 的 analysis 时我们需要扩展 haystack 提供的 elasticsearch backend ，实现一个可配置化的 search backend。</p>
+<p>在使用 Django 开发 web 应用，<a href="https://github.com/django-haystack/django-haystack">Haystack</a> 作为搜索接口，<a href="https://github.com/elastic/elasticsearch">Elasticsearch</a> 作为搜索引擎背景下，因为 Haystack 硬编码了 Elasticsearch 的 Settings 和 Mappings，所以当我们需要自定义 Elasticsearch 的 aAalysis 时，就需要扩展 Haystack 提供的 Elasticsearch backend ，实现一个可配置化的 search backend</p>
 
 <h2 id="背景">背景</h2>
 
@@ -153,7 +153,7 @@
 
 <p>Haystack 作为应用的搜索接口，提供了一个统一的、模块化的、Django 原生的 API 支持，并且以可插拔的方式，支持多种类型的搜索引擎作为搜索后端，在我们的实践中，使用 ElasticSearch 作为搜索后端引擎。</p>
 
-<p>这篇文章我们将介绍在使用 ElasticSearch 作为搜索引擎时，<strong>为什么</strong> 以及 <strong>如何</strong> 扩展 haystack 的 Search Backend ？</p>
+<p>这篇文章我们将介绍在使用 ElasticSearch 作为搜索引擎时，<strong>为什么</strong> 以及 <strong>如何</strong> 扩展 haystack 的 Search Backend？</p>
 
 <p>使用 Haystack 提供的 Elasticsearch Backend 可以满足大部分的索引和搜索需求，但是如果我们需要如下的两个功能，那就需要扩展它原生提供的 Search Backend 了。</p>
 
@@ -164,7 +164,7 @@
 
 <p>因为 Haystck 将索引的 settings 硬编码在它的 Elasticsearch Backend 中了，这导致我们无法自定义地修改索引和字段的 settings，即便是我们使用 Elasticsearch 提供的方式，单独对 Elasticsearch 的 settings 进行了修改，但在我们下次在 rebuild index 时，它还是会覆盖掉我们的修改。</p>
 
-<p>为此，我们需要在 Haystack 层面实现一个可配置的 Search Backend，可以实现灵活的修改 index 的设置(主要是 analysis 相关)，以及数据字段的设置修改。</p>
+<p>为此，我们需要在 Haystack 层面实现一个可配置的 Search Backend，可以实现灵活的修改 index 的设置(主要是 analysis 相关)，以及数据字段的设置。</p>
 
 <h2 id="configurable-elasticseach-backend">Configurable Elasticseach Backend</h2>
 
@@ -186,7 +186,7 @@
 </code></pre></div></div>
 
 <p>现在我们已经支持自定义 index 的 settings 和默认的 analyzer 了，但是如果我们想要基于字段的 analyzer 呢？
-很简单，我们只需要在字段的设置中添加一条 analyer 参数就行，通过扩展 Field 类，实现添加一个 analyer 关键字参数:</p>
+很简单，只需要在字段的设置中添加一条 analyer 参数就行，通过扩展 Field 类，实现添加一个 analyer 关键字参数:</p>
 
 <p><strong>Mixin:</strong></p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ConfigurableFieldMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -296,7 +296,7 @@
 
 <p>在上述的几个几个步骤中我们实现了可配置化的 Search Backend 和更加灵活的字段设置，但是这是否真的到这里就完了呢？答案是否定的！</p>
 
-<p>常规情况下，当我们在增加了新的字段时，Haystack 会帮助我们更新 Index 的设置，该设置也会在 Elasticsearch 中即时生效。</p>
+<p>一般情况下，当我们在增加了新的数据字段时，Haystack 会帮助我们更新 Index 的设置，该设置也会在 Elasticsearch 中即时生效。</p>
 
 <p><strong>NOTES:</strong>  索引数据的更新，需要我们手工使用 Haystack 提供的更新索引的命令（update index）或是在代码中 (使用信号) 实现从数据库中加载数据。</p>
 
@@ -309,7 +309,7 @@
 
 <p>那有没有可以帮助我们实现不存在索引数据丢失并且快速重新索引的方式呢？</p>
 
-<p>请参考下篇文章，看我们如何实现零宕机的重新索引！</p>
+<p>请参考下篇文章，<a href="/posts/django-haystack-es-reindex">如何实现零宕机重新索引 Elasticsearch 索引数据</a>！</p>
 
 <h2 id="参考">参考</h2>
 

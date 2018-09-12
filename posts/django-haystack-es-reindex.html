@@ -147,11 +147,11 @@
           <div class="article-content">
             <h2 id="一句话">一句话</h2>
 
-<p>在使用 Django 开发 web 应用，使用 Haystack 作为我们的搜索接口，Elasticsearch 作为搜索引擎的背景下，因为 haystack 提供的重建索引的命令会导致长时间的数据丢失，所以本文中我们使用 Elasticsearch 的 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html#index-aliases">index alias</a> 和多个 Haystack 的 <a href="http://django-haystack.readthedocs.io/en/master/settings.html#haystack-connections">connection</a> 的方式，结合<a href="https://martinfowler.com/bliki/BlueGreenDeployment.html">蓝绿部署</a>的概念，实现了零宕机的快速重新索引。</p>
+<p>在使用 Django 开发 web 应用，Haystack 作为搜索接口，Elasticsearch 作为搜索引擎的背景下，因为 haystack 提供的重建索引的命令会导致长时间的数据丢失，所以本文中介绍了我们如何使用 Elasticsearch 提供的 <a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html#index-aliases">index alias</a> 和 Haystack 多个 <a href="http://django-haystack.readthedocs.io/en/master/settings.html#haystack-connections">connection</a> 的方式，结合<a href="https://martinfowler.com/bliki/BlueGreenDeployment.html">蓝绿部署</a>的概念，实现了零宕机的快速重新索引。</p>
 
 <h2 id="背景">背景</h2>
 
-<p>承接上篇，我们介绍的可配置化的 Haystack Elasticsearch Backend，这篇文章，我们将介绍如何真正的实现零宕机的重新索引数据。</p>
+<p>承接上篇，在完成可配置化的 Haystack Elasticsearch Backend 后，这篇文章，我们就来介绍如何真正的实现零宕机的重新索引数据。</p>
 
 <p><a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/reindex.html#reindex">官方对重新索引的说明</a>：</p>
 
@@ -163,7 +163,7 @@
 
 <p>这里我们借鉴了蓝绿部署的思想，结合 Elasticsearch Index Alias 和 Haystack Multiple Connection 的功能，满足了我们的需求，实现了零宕机的，随时随地的，重新索引我们的数据。</p>
 
-<p>重新索引的原因是在我们修改了索引的设置后，数据也不一定会被正确索引，设置也不一定会即时生效，根据设置的类型，有如下<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings">几种情况</a>：</p>
+<p>重新索引的原因是在我们修改了索引的设置后，数据也不一定会被正确索引，设置也不一定会即时生效，根据 Index 设置的类型，有如下<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules.html#index-modules-settings">几种情况</a>：</p>
 
 <blockquote>
   <ul>
@@ -202,9 +202,9 @@
 
 <p>我们将 blue / green 中的一个 index 的别名设置为 default 的 index 名称，这样对于我们的应用来说，索引的名称是始终固定的 haystack，只是我们在更新或添加新的设置时，交替的将 blue 和 green 的别名指向到 default 上，类似于蓝绿部署一样的功能，实现了灵活的零宕机的重新索引。</p>
 
-<h2 id="django-management-command-for-reindex-date">Django management command for reindex date</h2>
+<h2 id="django-management-command-for-reindex-data">Django management command for reindex data</h2>
 
-<p>我们使用 Django 的管理命令具体实现了重新索引 (reindex) 这个行为，并将其添加到了我们的 CI 的 pipeline 中，作为一个 on-demand 的任务，交由开发人员使用。</p>
+<p>我们使用 Django 的管理命令具体实现了重新索引 (reindex) 这个行为，并将其添加到了我们的 CI 的 pipeline 中，作为一个按需的任务，交由开发人员使用。</p>
 
 <p>我们重新索引的逻辑是这样的：</p>
 
@@ -315,10 +315,10 @@
 
 <h3 id="notes">NOTES</h3>
 
-<p>本文没有，完全采用参考的文章中方法，原因如下（参考的文章中有坑）：</p>
+<p>本文没有完全采用参考文章中的方法，原因如下（原文有坑）：</p>
 
 <ol>
-  <li>原文中， reindex 时，使用的是从 Elasticsearch 中获取的 Mapping（应该从代码中获取），这导致代码中修改后的 data field 的设置在修改后不会在新的 index 中生效。</li>
+  <li>原文中， reindex 时，使用的是从 Elasticsearch 中获取的 Mapping（应该从代码中生成），这导致代码中修改后的 data field 的设置在修改后不会在新的 index 中被使用。</li>
   <li>原文中，扩展 Search Backend 时，将 <code class="highlighter-rouge">setup_complete</code> 属性，设置为了 <code class="highlighter-rouge">True</code>，这需要重新覆盖 haystack 所有的 setup 行为 (包括有应用初始化/搜索/更新/删除/清除/重构)，都需要人工地使用管理命令操作。</li>
 </ol>
 

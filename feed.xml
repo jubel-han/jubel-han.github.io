@@ -7,6 +7,14 @@
     <atom:link href="http://jubel.cn/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>可自动伸缩的 Kubernetes DNS 服务</title>
+        <description>Autoscaling the Kubernetes DNS Service</description>
+        <pubDate>Wed, 12 Sep 2018 00:00:00 +0800</pubDate>
+        <link>http://jubel.cn/posts/autoscale-k8s-dns-service</link>
+        <guid isPermaLink="true">http://jubel.cn/posts/autoscale-k8s-dns-service</guid>
+      </item>
+    
+      <item>
         <title>金丝雀自动化分析工具 Kayenta</title>
         <description>Google and Netflix announced the launch of Kayenta, an open-source Automated Canary Analysis(ACA) tool.</description>
         <pubDate>Sun, 27 May 2018 00:00:00 +0800</pubDate>
